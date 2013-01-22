@@ -24,7 +24,8 @@ class CachePanel(DebugPanel):
         for log in wrapper.log:
             if hasattr(log, 'hit'):
                 stats[log.hit and 'hit' or 'miss'] += 1
-            stats['time'] += log.time
+            if hasattr(log, 'time'):
+                stats['time'] += log.time
 
         # No ngettext, too many combos!
         stats['time'] = round(stats['time'], 2)
@@ -105,7 +106,7 @@ class CacheWrapper(object):
         val = self.real_methods['get_many'](keys)
         self.log[-1].hit = bool(val)
         return val
-        
+
     @logged
     def set_many(self, dict_mapping, timeout=None):
         return self.real_methods['set_many'](dict_mapping, timeout)
